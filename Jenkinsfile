@@ -1,7 +1,5 @@
-pipeline {
-    agent none 
-    stages {
-        stage('Build') { 
+node {
+    stage('Build') { 
             agent {
                 docker {
                     image 'python:2-alpine' 
@@ -11,9 +9,8 @@ pipeline {
                 sh 'python -m py_compile sources/add2vals.py sources/calc.py' 
                 stash(name: 'compiled-results', includes: 'sources/*.py*') 
             }
-        }
-
-        stage('Test') {
+    }
+    stage('Test') {
             agent {
                 docker {
                     image 'qnib/pytest'
@@ -27,6 +24,5 @@ pipeline {
                     junit 'test-reports/results.xml'
                 }
             }
-        }
     }
 }
